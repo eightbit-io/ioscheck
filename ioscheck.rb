@@ -1,21 +1,13 @@
 #!/usr/bin/env ruby
 
-require 'fileutils'
-
-if ARGV.empty?
-	abort ( "USAGE: ruby bincheckios.rb [PATH TO BINARY]" )
-else
-	path_to_binary = ARGV[0]
-end
-
+path_to_binary = ARGV[0] or abort ( "USAGE: ruby ioscheck.rb [PATH TO BINARY]" )
 binary = File.basename( path_to_binary, ".*" )
 
 output = File.new( binary + "_binary_checks.txt", "w+" )
 
-#PIE Check
+# PIE Check
 
 pie_check = `otool -hv #{ path_to_binary } | grep PIE`
-
 output.puts "POSITION INDEPENDENT EXECUTABLE:\n\n"
 
 if pie_check == ''
@@ -27,10 +19,9 @@ end
 output.puts "$ otool -hv #{ path_to_binary } | grep PIE\n"
 output.puts "#{ pie_check.strip() }\n\n"
 
-#Stack Smashing Protection Check
+# Stack Smashing Protection Check
 
 stack_check = `otool -Iv #{ path_to_binary } | grep stack`
-
 output.puts "STACK SMASHING PROTECTION:\n\n"
 
 if stack_check == ''
@@ -42,10 +33,9 @@ end
 output.puts "$ otool -Iv #{ path_to_binary } | grep stack\n"
 output.puts "#{ stack_check.strip() }\n\n"
 
-#ARC Check
+# ARC Check
 
 arc_check = `otool -Iv #{ path_to_binary } | grep _objc_release`
-
 output.puts "AUTOMATIC REFERENCE COUNTING:\n\n"
 
 if arc_check == ''
@@ -57,7 +47,7 @@ end
 output.puts "$ otool -Iv #{ path_to_binary } | grep _objc_release\n"
 output.puts "#{ arc_check.strip() }\n\n"
 
-#Symbol Table
+# Symbol Table
 
 symbol_table = File.new( binary + "_symbol_table.txt", "w+" )
 symbol_table.puts "#{ `nm #{ path_to_binary }` }"
@@ -65,7 +55,6 @@ symbol_table.puts "#{ `nm #{ path_to_binary }` }"
 #Class Dump
 
 class_dump = File.new( binary + "_class_dump.txt", "w+" )
-
 class_dump_check = `class-dump-z -A #{ path_to_binary }`
 
 if class_dump_check =~ /Command Not Found/
@@ -73,4 +62,11 @@ if class_dump_check =~ /Command Not Found/
 else
 	class_dump.puts class_dump_check
 end
+
+# URL Handlers
+
+url_handlers = File.new( binary + "_url_handlers.txt", "w+" )
+url_handlers.puts "#{ `strings - #{ path_to_binary } | grep "://" | grep -v "http"` }"
+
+
 
