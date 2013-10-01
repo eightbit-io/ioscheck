@@ -9,9 +9,9 @@ pie_check = `otool -hv #{ path_to_binary } | grep PIE`
 output.puts "TEST 1: POSITION INDEPENDENT EXECUTABLE:\n\n"
 
 if pie_check.empty?
-	output.puts "FAIL: Binary has not been compiled with PIE\n\n"
+  output.puts "FAIL: Binary has not been compiled with PIE\n\n"
 else
-	output.puts "PASS: Binary has been compiled with PIE\n\n"
+  output.puts "PASS: Binary has been compiled with PIE\n\n"
 end
 
 output.puts "OUTPUT:\n"
@@ -23,9 +23,9 @@ stack_check = `otool -Iv #{ path_to_binary } | grep stack`
 output.puts "TEST2: STACK SMASHING PROTECTION:\n\n"
 
 if stack_check.empty?
-	output.puts "FAIL: Binary has not been compiled with Stack Smashing Protection\n\n"
+  output.puts "FAIL: Binary has not been compiled with Stack Smashing Protection\n\n"
 else
-	output.puts "PASS: Binary has been compiled with Stack Smashing Protection\n\n"
+  output.puts "PASS: Binary has been compiled with Stack Smashing Protection\n\n"
 end
 
 output.puts "OUTPUT:\n"
@@ -37,9 +37,9 @@ arc_check = `otool -Iv #{ path_to_binary } | grep _objc_release`
 output.puts "TEST 3: AUTOMATIC REFERENCE COUNTING:\n\n"
 
 if arc_check.empty?
-	output.puts "INFO: Application does not use Automatic Reference Counting\n\n"
+  output.puts "INFO: Application does not use Automatic Reference Counting\n\n"
 else
-	output.puts "INFO: Application uses Automatic Reference Counting\n\n"
+  output.puts "INFO: Application uses Automatic Reference Counting\n\n"
 end
 
 output.puts "OUTPUT:\n"
@@ -55,9 +55,9 @@ class_dump = File.new( binary + "_class_dump.txt", "w+" )
 class_dump_check = `class-dump-z -A #{ path_to_binary }`
 
 if class_dump_check =~ /Command Not Found/
-	class_dump.puts "class-dump-z is not installed on this system or not in your PATH."
+  class_dump.puts "class-dump-z is not installed on this system or not in your PATH."
 else
-	class_dump.puts class_dump_check
+  class_dump.puts class_dump_check
 end
 
 # URL Handlers
